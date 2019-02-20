@@ -89,6 +89,21 @@
     "monolog/monolog": {
         "version": "1.24.0"
     },
+    "msgphp/domain": {
+        "version": "v0.9.0"
+    },
+    "msgphp/user": {
+        "version": "v0.9.0"
+    },
+    "msgphp/user-bundle": {
+        "version": "0.6",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "0.6",
+            "ref": "6629107e956e6eb4a7d45367717ff4e7c0dd5a9f"
+        }
+    },
     "nikic/php-parser": {
         "version": "v4.2.0"
     },
@@ -118,6 +133,9 @@
     },
     "psr/simple-cache": {
         "version": "1.0.1"
+    },
+    "sebastian/diff": {
+        "version": "3.0.2"
     },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
@@ -237,6 +255,15 @@
             "branch": "master",
             "version": "1.0",
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
+        }
+    },
+    "symfony/messenger": {
+        "version": "4.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.1",
+            "ref": "f11dfa18618a8a5dd853ea3a302db2e0557e031c"
         }
     },
     "symfony/monolog-bridge": {
