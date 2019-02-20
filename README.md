@@ -20,6 +20,9 @@ you can run development server by using:
 ```
 bin/console server:start
 ```
+
+Settings for application can be found and set to desirable values here: config/packages/lottery.yaml
+
 # Command
 Command to run sending pending money gifts ():
 ```
