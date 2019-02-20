@@ -5,12 +5,8 @@
 {% block body %}
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/home/lamiev/Work/php/lottery/src/Controller/LotteryController.php'|file_link(0) }}">src/Controller/LotteryController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/lamiev/Work/php/lottery/templates/lottery/index.html.twig'|file_link(0) }}">templates/lottery/index.html.twig</a></code></li>
-    </ul>
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    {{ form_end(form) }}
 </div>
 {% endblock %}

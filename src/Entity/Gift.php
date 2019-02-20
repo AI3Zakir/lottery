@@ -32,6 +32,11 @@ class Gift
      */
     private $user;
 
+    /**
+     * @ORM\Column(type="boolean", options={"default" = false})
+     */
+    private $claimed;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -57,6 +62,18 @@ class Gift
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getClaimed(): ?bool
+    {
+        return $this->claimed;
+    }
+
+    public function setClaimed(bool $claimed): self
+    {
+        $this->claimed = $claimed;
 
         return $this;
     }
