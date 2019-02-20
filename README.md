@@ -20,3 +20,21 @@ you can run development server by using:
 ```
 bin/console server:start
 ```
+# Command
+Command to run sending pending money gifts ():
+```
+bin/console lottery:send-to-bank-money
+```
+or
+```
+bin/console lottery:send-to-bank-money 20
+```
+where argument is a batch number
+
+Command can be found here: src/Command/LotterySendToBankMoneyCommand.php
+# Tests
+Tests can be launched through:
+```
+bin/phpunit tests
+```
+tests can be found here: tests/LotterySericeTest.php
