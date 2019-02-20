@@ -74,15 +74,21 @@ class LotteryController extends AbstractController
 
     /**
      * @Route("/claim/{gift}", name="claim")
-     * @param Request $request
      * @param User $user
      * @param Gift $gift
-     * @return void
+     * @return RedirectResponse
      * @ParamConverter("user", converter="msgphp.current_user")
      */
-    public function claim(Request $request, User $user, Gift $gift)
+    public function claim(User $user, Gift $gift)
     {
-
+        if ($gift->getType() === Gift::TYPE_LOYALTY_POINTS) {
+            $this->lotteryService->addLoyaltyPoints($user, $gift);
+            return new RedirectResponse('/profile');
+        } elseif ($gift->getType() === Gift::TYPE_MONEY) {
+            return new RedirectResponse('/claim/money/' . $gift->getId());
+        } elseif ($gift->getType() === Gift::TYPE_PHYSICAL) {
+            return new RedirectResponse('/claim/physical/' . $gift->getId());
+        }
     }
 
     /**
@@ -90,11 +96,12 @@ class LotteryController extends AbstractController
      * @param Request $request
      * @param User $user
      * @param Gift $gift
-     * @return void
+     * @return RedirectResponse
      * @ParamConverter("user", converter="msgphp.current_user")
      */
     public function reject(Request $request, User $user, Gift $gift)
     {
-
+        $this->lotteryService->rejectGift($gift);
+        return new RedirectResponse('/profile');
     }
 }

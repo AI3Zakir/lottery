@@ -86,4 +86,20 @@ class LotteryService
         $this->entityManager->persist($gift);
         $this->entityManager->flush();
     }
+
+    public function addLoyaltyPoints(User $user, Gift $gift)
+    {
+        $user->setLoyaltyBalance($user->getLoyaltyBalance() + $gift->getLoyalty()->getAmount());
+        $gift->setStatus(Gift::CLAIMED);
+        $this->entityManager->persist($user);
+        $this->entityManager->persist($gift);
+        $this->entityManager->flush();
+    }
+
+    public function rejectGift(Gift $gift)
+    {
+        $gift->setStatus(Gift::REJECTED);
+        $this->entityManager->persist($gift);
+        $this->entityManager->flush();
+    }
 }

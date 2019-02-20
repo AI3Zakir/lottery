@@ -21,8 +21,8 @@ class Gift
     ];
 
     const PENDING = 0;
-    const CLAIMED = 0;
-    const REJECTED = 0;
+    const CLAIMED = 1;
+    const REJECTED = 2;
 
     /**
      * @ORM\Id()
