@@ -23,5 +23,7 @@ final class RegisterType extends AbstractType
             'password_confirm' => true,
             'password_options' => ['constraints' => new NotBlank()],
         ]);
+        $builder->add('firstName');
+        $builder->add('lastName');
     }
 }
