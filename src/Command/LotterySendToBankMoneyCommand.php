@@ -60,7 +60,6 @@ class LotterySendToBankMoneyCommand extends Command
 
         $offset = 0;
         while ($gifts = $this->giftRepository->findBy(['status' => Gift::PENDING_TO_SEND], null, $batchLimit, $offset * $batchLimit)) {
-            dump($offset);
             /** @var Gift $gift */
             foreach ($gifts as $gift) {
                 $this->paymentService->send($gift);

@@ -18,7 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use MsgPhp\User\Infra\Doctrine\Repository\UserRepository;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class LotteryService
+class LotteryService implements ServiceInterface
 {
     /**
      * @var $giftRepository GiftRepository
@@ -72,7 +72,7 @@ class LotteryService
      */
     public function play($user)
     {
-        $randomType = 0;
+        $randomType = array_rand([Gift::TYPE_MONEY, Gift::TYPE_LOYALTY_POINTS, Gift::TYPE_PHYSICAL]);
         $gift = new Gift();
         $gift->setType($randomType);
         $gift->setUser($user);
@@ -117,7 +117,7 @@ class LotteryService
         $this->entityManager->flush();
     }
 
-    public function convertMoneyIntoLoyaltyBonuses(Gift $gift, User $user)
+    public function convertMoneyIntoLoyaltyBonusesAndAssign(Gift $gift, User $user)
     {
         $gift->getMoney()->setConverted(true);
         $gift->setStatus(Gift::CLAIMED);
@@ -129,7 +129,7 @@ class LotteryService
         $newLoyaltyGift->setType(Gift::TYPE_LOYALTY_POINTS);
         $newLoyaltyGiftItem = new GiftItemLoyalty();
         $ratio = $this->container->getParameter('lottery_loyalty_coef');
-        $newLoyaltyGiftItem->setAmount($gift->getMoney()->getAmount() * $ratio);
+        $newLoyaltyGiftItem->setAmount($this->convert($ratio, $gift));
         $newLoyaltyGiftItem->setGift($newLoyaltyGift);
         $this->addLoyaltyPoints($user, $newLoyaltyGift);
     }
@@ -139,5 +139,15 @@ class LotteryService
         $gift->setStatus(Gift::PENDING_TO_SEND);
         $this->entityManager->persist($gift);
         $this->entityManager->flush();
+    }
+
+    /**
+     * @param $ratio
+     * @param Gift $gift
+     * @return float|int
+     */
+    public function convert($ratio, $gift)
+    {
+        return $gift->getMoney()->getAmount() * $ratio;
     }
 }

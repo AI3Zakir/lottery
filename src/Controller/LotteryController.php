@@ -125,7 +125,7 @@ class LotteryController extends AbstractController
 
                 return new RedirectResponse('/profile');
             } else {
-                $this->lotteryService->convertMoneyIntoLoyaltyBonuses($gift, $user);
+                $this->lotteryService->convertMoneyIntoLoyaltyBonusesAndAssign($gift, $user);
 
                 return new RedirectResponse('/profile');
             }

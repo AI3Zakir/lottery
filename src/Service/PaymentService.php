@@ -14,7 +14,7 @@ use App\Entity\User\User;
 use App\Payments\DummyPayment;
 use Doctrine\ORM\EntityManagerInterface;
 
-class PaymentService
+class PaymentService implements ServiceInterface
 {
     /**
      * @var DummyPayment $dummyPayment
