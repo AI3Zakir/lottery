@@ -46,15 +46,18 @@ class User extends BaseUser implements DomainEventHandlerInterface
     private $lastName;
 
     /**
-     * @ORM\Column(type="float", options={default: 0})
+     * @ORM\Column(type="float", options={"default": 0 })
      */
     private $loyaltyBalance;
 
-    public function __construct(UserIdInterface $id, string $email, string $password)
+    public function __construct(UserIdInterface $id, string $email, string $password, string $firstName, string $lastName, $loyaltyBalance = 0)
     {
         $this->id = $id;
         $this->credential = new EmailPassword($email, $password);
         $this->gifts = new ArrayCollection();
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
+        $this->loyaltyBalance = $loyaltyBalance;
     }
 
     public function getId(): UserIdInterface

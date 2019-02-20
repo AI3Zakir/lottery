@@ -1,9 +1,10 @@
-lottery:
-  loyalty_coef: 0.5
+parameters:
+  lottery:
+    loyalty_coef: 0.5
 
-  # Can be refactored later and written as Entities and ability to manage this list from admin panel
-  physical_gifts:
-    - T-Shirt
-    - Cup
-    - Candle
-    - MacBook
+    # Can be refactored later and written as Entities and ability to manage this list from admin panel
+    physical_gifts:
+      - T-Shirt
+      - Cup
+      - Candle
+      - MacBook
