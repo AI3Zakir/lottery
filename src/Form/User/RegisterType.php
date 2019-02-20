@@ -25,5 +25,6 @@ final class RegisterType extends AbstractType
         ]);
         $builder->add('firstName');
         $builder->add('lastName');
+        $builder->add('bankAccount');
     }
 }

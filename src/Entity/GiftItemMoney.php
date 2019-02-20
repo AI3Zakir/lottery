@@ -31,6 +31,11 @@ class GiftItemMoney implements GiftItemInterface
      */
     private $gift;
 
+    /**
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    private $transferred;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -80,5 +85,17 @@ class GiftItemMoney implements GiftItemInterface
     public function getReadable()
     {
         return $this->amount . '$';
+    }
+
+    public function getTransferred(): ?bool
+    {
+        return $this->transferred;
+    }
+
+    public function setTransferred(bool $transferred): self
+    {
+        $this->transferred = $transferred;
+
+        return $this;
     }
 }

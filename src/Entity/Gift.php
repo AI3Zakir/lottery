@@ -23,6 +23,7 @@ class Gift
     const PENDING = 0;
     const CLAIMED = 1;
     const REJECTED = 2;
+    const PENDING_TO_SEND = 3;
 
     /**
      * @ORM\Id()

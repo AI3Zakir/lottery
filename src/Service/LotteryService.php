@@ -41,17 +41,30 @@ class LotteryService
     private $container;
 
     /**
+     * @var PaymentService $paymentService
+     */
+    private $paymentService;
+
+    /**
      * LotteryService constructor.
      * @param GiftRepository $giftRepository
      * @param UserRepository $userRepository
      * @param EntityManagerInterface $entityManager
+     * @param PaymentService $paymentService
+     * @param ContainerInterface $container
      */
-    public function __construct(GiftRepository $giftRepository, UserRepository $userRepository, EntityManagerInterface $entityManager, ContainerInterface $container)
+    public function __construct(
+        GiftRepository $giftRepository,
+        UserRepository $userRepository,
+        EntityManagerInterface $entityManager,
+        PaymentService $paymentService,
+        ContainerInterface $container)
     {
         $this->giftRepository = $giftRepository;
         $this->userRepository = $userRepository;
         $this->entityManager = $entityManager;
         $this->container = $container;
+        $this->paymentService = $paymentService;
     }
 
     /**
@@ -59,7 +72,7 @@ class LotteryService
      */
     public function play($user)
     {
-        $randomType = array_rand([Gift::TYPE_MONEY, Gift::TYPE_LOYALTY_POINTS, Gift::TYPE_PHYSICAL]);
+        $randomType = 0;
         $gift = new Gift();
         $gift->setType($randomType);
         $gift->setUser($user);
@@ -69,6 +82,7 @@ class LotteryService
             $giftItem = new GiftItemMoney();
             $giftItem->setAmount(rand($minMoney, $maxMoney));
             $giftItem->setConverted(false);
+            $giftItem->setTransferred(false);
             $giftItem->setGift($gift);
         } elseif ($randomType === Gift::TYPE_LOYALTY_POINTS) {
             $minLoyalty = $this->container->getParameter('lottery_min_loyalty');
@@ -118,5 +132,12 @@ class LotteryService
         $newLoyaltyGiftItem->setAmount($gift->getMoney()->getAmount() * $ratio);
         $newLoyaltyGiftItem->setGift($newLoyaltyGift);
         $this->addLoyaltyPoints($user, $newLoyaltyGift);
+    }
+
+    public function sendToBank(Gift $gift)
+    {
+        $gift->setStatus(Gift::PENDING_TO_SEND);
+        $this->entityManager->persist($gift);
+        $this->entityManager->flush();
     }
 }

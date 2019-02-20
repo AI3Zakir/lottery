@@ -121,9 +121,9 @@ class LotteryController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('sendToBankAccount')->isClicked()) {
-                // TODO: Send to bank account Through payment interfaces etc.
+                $this->lotteryService->sendToBank($gift);
 
-                return new RedirectResponse('/list');
+                return new RedirectResponse('/profile');
             } else {
                 $this->lotteryService->convertMoneyIntoLoyaltyBonuses($gift, $user);
 

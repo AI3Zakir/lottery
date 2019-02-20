@@ -50,7 +50,12 @@ class User extends BaseUser implements DomainEventHandlerInterface
      */
     private $loyaltyBalance;
 
-    public function __construct(UserIdInterface $id, string $email, string $password, string $firstName, string $lastName, $loyaltyBalance = 0)
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $bankAccount;
+
+    public function __construct(UserIdInterface $id, string $email, string $password, string $firstName, string $lastName, $loyaltyBalance = 0, $bankAccount = null)
     {
         $this->id = $id;
         $this->credential = new EmailPassword($email, $password);
@@ -58,6 +63,7 @@ class User extends BaseUser implements DomainEventHandlerInterface
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->loyaltyBalance = $loyaltyBalance;
+        $this->bankAccount = $bankAccount;
     }
 
     public function getId(): UserIdInterface
@@ -128,6 +134,18 @@ class User extends BaseUser implements DomainEventHandlerInterface
     public function setLoyaltyBalance(float $loyaltyBalance): self
     {
         $this->loyaltyBalance = $loyaltyBalance;
+
+        return $this;
+    }
+
+    public function getBankAccount(): ?string
+    {
+        return $this->bankAccount;
+    }
+
+    public function setBankAccount(string $bankAccount): self
+    {
+        $this->bankAccount = $bankAccount;
 
         return $this;
     }
