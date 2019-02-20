@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello LotteryController!{% endblock %}
+
+{% block body %}
+
+<div class="example-wrapper">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Type</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for gift in gifts %}
+                <tr>
+                    <th>{{ gift.id }}</th>
+                    <td>{{ constant('App\\Entity\\Gift::READABLE_TYPES')[gift.type] }}</td>
+                    <td>
+                        <a class="btn btn-outline-primary" href="{{ path('claim', {'gift': gift.id}) }}">Claim</a>
+                        <a class="btn btn-danger" href="{{ path('reject', {'gift': gift.id}) }}">Reject</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

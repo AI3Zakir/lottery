@@ -11,9 +11,9 @@ namespace App\Service;
 use App\Entity\Gift;
 use App\Entity\User\User;
 use App\Repository\GiftRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use MsgPhp\User\Infra\Doctrine\Repository\UserRepository;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class LotteryService
 {
@@ -30,7 +30,12 @@ class LotteryService
     /**
      * @var EntityManagerInterface $entityManager
      */
-    private  $entityManager;
+    private $entityManager;
+
+    /**
+     * @var ContainerInterface $container
+     */
+    private $container;
 
     /**
      * LotteryService constructor.
@@ -38,11 +43,12 @@ class LotteryService
      * @param UserRepository $userRepository
      * @param EntityManagerInterface $entityManager
      */
-    public function __construct(GiftRepository $giftRepository, UserRepository $userRepository, EntityManagerInterface $entityManager)
+    public function __construct(GiftRepository $giftRepository, UserRepository $userRepository, EntityManagerInterface $entityManager, ContainerInterface $container)
     {
         $this->giftRepository = $giftRepository;
         $this->userRepository = $userRepository;
         $this->entityManager = $entityManager;
+        $this->container = $container;
     }
 
     /**
@@ -54,6 +60,18 @@ class LotteryService
         $gift = new Gift();
         $gift->setType($randomType);
         $gift->setUser($user);
+        if($randomType === Gift::TYPE_MONEY) {
+            $minMoney = $this->container->getParameter('lottery_min_money');
+            $maxMoney = $this->container->getParameter('lottery_max_money');
+            $gift->setMoney(rand($minMoney, $maxMoney));
+        } elseif ($randomType === Gift::TYPE_LOYALTY_POINTS) {
+            $minLoyalty = $this->container->getParameter('lottery_min_loyalty');
+            $maxLoyalty = $this->container->getParameter('lottery_max_loyalty');
+            $gift->setLoyaltyPoints(rand($minLoyalty, $maxLoyalty));
+        } elseif ($randomType === Gift::TYPE_PHYSICAL) {
+            $availablePhysicalGifts = $this->container->getParameter('lottery_physical_gifts');
+            $gift->setPhysicalItem(array_rand($availablePhysicalGifts));
+        }
         $this->entityManager->persist($gift);
         $this->entityManager->flush();
     }

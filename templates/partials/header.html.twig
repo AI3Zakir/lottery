@@ -4,6 +4,7 @@
         <a class="p-2 text-dark" href="{{ path('home') }}">Home</a>
         <a class="p-2 text-dark" href="{{ path('lottery') }}">Lottery</a>
         <a class="p-2 text-dark" href="{{ path('profile') }}">Profile</a>
+        <a class="p-2 text-dark" href="{{ path('list') }}">Gifts</a>
     </nav>
     {% if is_granted('ROLE_USER') %}
         <a class="btn btn-outline-primary" href="{{ path('logout') }}">Logout</a>

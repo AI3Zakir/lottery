@@ -14,6 +14,12 @@ class Gift
     const TYPE_LOYALTY_POINTS = 1;
     const TYPE_PHYSICAL = 2;
 
+    const READABLE_TYPES = [
+        self::TYPE_MONEY => 'Money',
+        self::TYPE_LOYALTY_POINTS => 'Loyalty Points',
+        self::TYPE_PHYSICAL => 'Physical Gift'
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -35,7 +41,27 @@ class Gift
     /**
      * @ORM\Column(type="boolean", options={"default" = false})
      */
-    private $claimed;
+    private $claimed = false;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default" = false})
+     */
+    private $rejected = false;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $physicalItem;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $loyaltyPoints;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $money;
 
     public function getId(): ?int
     {
@@ -74,6 +100,54 @@ class Gift
     public function setClaimed(bool $claimed): self
     {
         $this->claimed = $claimed;
+
+        return $this;
+    }
+
+    public function getRejected(): ?bool
+    {
+        return $this->rejected;
+    }
+
+    public function setRejected(bool $rejected): self
+    {
+        $this->rejected = $rejected;
+
+        return $this;
+    }
+
+    public function getPhysicalItem(): ?string
+    {
+        return $this->physicalItem;
+    }
+
+    public function setPhysicalItem(?string $physicalItem): self
+    {
+        $this->physicalItem = $physicalItem;
+
+        return $this;
+    }
+
+    public function getLoyaltyPoints(): ?float
+    {
+        return $this->loyaltyPoints;
+    }
+
+    public function setLoyaltyPoints(?float $loyaltyPoints): self
+    {
+        $this->loyaltyPoints = $loyaltyPoints;
+
+        return $this;
+    }
+
+    public function getMoney(): ?float
+    {
+        return $this->money;
+    }
+
+    public function setMoney(?float $money): self
+    {
+        $this->money = $money;
 
         return $this;
     }

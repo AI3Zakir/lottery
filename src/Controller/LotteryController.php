@@ -2,23 +2,23 @@
 
 namespace App\Controller;
 
+use App\Entity\Gift;
 use App\Entity\User\User;
 use App\Form\LotteryType;
+use App\Repository\GiftRepository;
 use App\Service\LotteryService;
-use MsgPhp\User\Infra\Doctrine\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class LotteryController extends AbstractController
 {
     /**
-     * @var LotteryService $lotterService
+     * @var LotteryService $lotteryService
      */
-    private $lotterService;
+    private $lotteryService;
 
     /**
      * LotteryController constructor.
@@ -26,7 +26,7 @@ class LotteryController extends AbstractController
      */
     public function __construct(LotteryService $lotteryService)
     {
-        $this->lotterService = $lotteryService;
+        $this->lotteryService = $lotteryService;
     }
 
 
@@ -43,7 +43,7 @@ class LotteryController extends AbstractController
         $form = $formFactory->createNamed('', LotteryType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->lotterService->play($user);
+            $this->lotteryService->play($user);
 
         }
         return $this->render('lottery/index.html.twig', [
@@ -52,10 +52,48 @@ class LotteryController extends AbstractController
     }
 
     /**
-     * @Route("/claim", name="claim")
+     * @Route("/list", name="list")
      * @param Request $request
+     * @param User $user
+     * @param GiftRepository $giftRepository
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @ParamConverter("user", converter="msgphp.current_user")
      */
-    public function claim(Request $request)
+    public function list(Request $request, User $user, GiftRepository $giftRepository)
+    {
+        $availableGifts = $giftRepository->findBy([
+            'user' => $user,
+            'rejected' => false,
+            'claimed' => false
+        ]);
+
+        return $this->render('lottery/list.html.twig', [
+            'gifts' => $availableGifts,
+        ]);
+    }
+
+    /**
+     * @Route("/claim/{gift}", name="claim")
+     * @param Request $request
+     * @param User $user
+     * @param Gift $gift
+     * @return void
+     * @ParamConverter("user", converter="msgphp.current_user")
+     */
+    public function claim(Request $request, User $user, Gift $gift)
+    {
+
+    }
+
+    /**
+     * @Route("/reject/{gift}", name="reject")
+     * @param Request $request
+     * @param User $user
+     * @param Gift $gift
+     * @return void
+     * @ParamConverter("user", converter="msgphp.current_user")
+     */
+    public function reject(Request $request, User $user, Gift $gift)
     {
 
     }
