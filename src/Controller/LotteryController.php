@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Gift;
 use App\Entity\User\User;
+use App\Form\ClaimMoneyFormType;
 use App\Form\LotteryType;
 use App\Repository\GiftRepository;
 use App\Service\LotteryService;
@@ -102,6 +103,50 @@ class LotteryController extends AbstractController
     public function reject(Request $request, User $user, Gift $gift)
     {
         $this->lotteryService->rejectGift($gift);
+        return new RedirectResponse('/profile');
+    }
+
+    /**
+     * @Route("/claim/money/{gift}", name="claimmoney")
+     * @param Request $request
+     * @param User $user
+     * @param Gift $gift
+     * @param FormFactoryInterface $formFactory
+     * @return RedirectResponse
+     * @ParamConverter("user", converter="msgphp.current_user")
+     */
+    public function claimMoney(Request $request, User $user, Gift $gift, FormFactoryInterface $formFactory)
+    {
+        $form = $formFactory->createNamed('', ClaimMoneyFormType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('sendToBankAccount')->isClicked()) {
+                // TODO: Send to bank account Through payment interfaces etc.
+
+                return new RedirectResponse('/list');
+            } else {
+                $this->lotteryService->convertMoneyIntoLoyaltyBonuses($gift, $user);
+
+                return new RedirectResponse('/profile');
+            }
+        }
+
+        return $this->render('lottery/claim.money.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/claim/physical/{gift}", name="claimphysical")
+     * @param User $user
+     * @param Gift $gift
+     * @return RedirectResponse
+     * @ParamConverter("user", converter="msgphp.current_user")
+     */
+    public function claimPhysical(User $user, Gift $gift)
+    {
+        // TODO: Make form with inputting addresses in order to ship item
+
         return new RedirectResponse('/profile');
     }
 }

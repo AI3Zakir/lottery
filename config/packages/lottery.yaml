@@ -4,7 +4,7 @@ parameters:
   lottery_max_money: 100
   lottery_min_loyalty: 10
   lottery_max_loyalty: 1000
-  lottery_loyalty_coef: 0.1
+  lottery_loyalty_coef: 10
   lottery_physical_gifts:
     - T-Shirt
     - Cup

@@ -102,4 +102,21 @@ class LotteryService
         $this->entityManager->persist($gift);
         $this->entityManager->flush();
     }
+
+    public function convertMoneyIntoLoyaltyBonuses(Gift $gift, User $user)
+    {
+        $gift->getMoney()->setConverted(true);
+        $gift->setStatus(Gift::CLAIMED);
+        $this->entityManager->persist($gift);
+        $this->entityManager->flush();
+
+        $newLoyaltyGift = new Gift();
+        $newLoyaltyGift->setUser($user);
+        $newLoyaltyGift->setType(Gift::TYPE_LOYALTY_POINTS);
+        $newLoyaltyGiftItem = new GiftItemLoyalty();
+        $ratio = $this->container->getParameter('lottery_loyalty_coef');
+        $newLoyaltyGiftItem->setAmount($gift->getMoney()->getAmount() * $ratio);
+        $newLoyaltyGiftItem->setGift($newLoyaltyGift);
+        $this->addLoyaltyPoints($user, $newLoyaltyGift);
+    }
 }
