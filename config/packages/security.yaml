@@ -36,4 +36,6 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/profile, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/lottery, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/list, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/claim, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/reject, roles: IS_AUTHENTICATED_FULLY }

@@ -10,6 +10,7 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Type</th>
+                <th scope="col">Item</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
@@ -19,6 +20,7 @@
                 <tr>
                     <th>{{ gift.id }}</th>
                     <td>{{ constant('App\\Entity\\Gift::READABLE_TYPES')[gift.type] }}</td>
+                    <td>{{ gift.item.readable }}</td>
                     <td>
                         <a class="btn btn-outline-primary" href="{{ path('claim', {'gift': gift.id}) }}">Claim</a>
                         <a class="btn btn-danger" href="{{ path('reject', {'gift': gift.id}) }}">Reject</a>

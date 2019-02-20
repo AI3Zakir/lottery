@@ -10,6 +10,7 @@ use App\Service\LotteryService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -45,6 +46,7 @@ class LotteryController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->lotteryService->play($user);
 
+            return new RedirectResponse('/list');
         }
         return $this->render('lottery/index.html.twig', [
             'form' => $form->createView(),
@@ -53,18 +55,16 @@ class LotteryController extends AbstractController
 
     /**
      * @Route("/list", name="list")
-     * @param Request $request
      * @param User $user
      * @param GiftRepository $giftRepository
      * @return \Symfony\Component\HttpFoundation\Response
      * @ParamConverter("user", converter="msgphp.current_user")
      */
-    public function list(Request $request, User $user, GiftRepository $giftRepository)
+    public function list(User $user, GiftRepository $giftRepository)
     {
         $availableGifts = $giftRepository->findBy([
             'user' => $user,
-            'rejected' => false,
-            'claimed' => false
+            'status' => Gift::PENDING
         ]);
 
         return $this->render('lottery/list.html.twig', [

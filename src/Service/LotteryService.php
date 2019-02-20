@@ -9,6 +9,9 @@
 namespace App\Service;
 
 use App\Entity\Gift;
+use App\Entity\GiftItemLoyalty;
+use App\Entity\GiftItemMoney;
+use App\Entity\GiftItemPhysical;
 use App\Entity\User\User;
 use App\Repository\GiftRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -63,15 +66,23 @@ class LotteryService
         if($randomType === Gift::TYPE_MONEY) {
             $minMoney = $this->container->getParameter('lottery_min_money');
             $maxMoney = $this->container->getParameter('lottery_max_money');
-            $gift->setMoney(rand($minMoney, $maxMoney));
+            $giftItem = new GiftItemMoney();
+            $giftItem->setAmount(rand($minMoney, $maxMoney));
+            $giftItem->setConverted(false);
+            $giftItem->setGift($gift);
         } elseif ($randomType === Gift::TYPE_LOYALTY_POINTS) {
             $minLoyalty = $this->container->getParameter('lottery_min_loyalty');
             $maxLoyalty = $this->container->getParameter('lottery_max_loyalty');
-            $gift->setLoyaltyPoints(rand($minLoyalty, $maxLoyalty));
+            $giftItem = new GiftItemLoyalty();
+            $giftItem->setAmount(rand($minLoyalty, $maxLoyalty));
+            $giftItem->setGift($gift);
         } elseif ($randomType === Gift::TYPE_PHYSICAL) {
             $availablePhysicalGifts = $this->container->getParameter('lottery_physical_gifts');
-            $gift->setPhysicalItem(array_rand($availablePhysicalGifts));
+            $giftItem = new GiftItemPhysical();
+            $giftItem->setName($availablePhysicalGifts[array_rand($availablePhysicalGifts)]);
+            $giftItem->setGift($gift);
         }
+        $gift->setStatus(Gift::PENDING);
         $this->entityManager->persist($gift);
         $this->entityManager->flush();
     }

@@ -20,6 +20,10 @@ class Gift
         self::TYPE_PHYSICAL => 'Physical Gift'
     ];
 
+    const PENDING = 0;
+    const CLAIMED = 0;
+    const REJECTED = 0;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -39,29 +43,27 @@ class Gift
     private $user;
 
     /**
-     * @ORM\Column(type="boolean", options={"default" = false})
+     * @ORM\Column(type="smallint", options={"default": 0})
      */
-    private $claimed = false;
+    private $status;
 
     /**
-     * @ORM\Column(type="boolean", options={"default" = false})
+     * @ORM\OneToOne(targetEntity="App\Entity\GiftItemLoyalty", inversedBy="gift", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=true)
      */
-    private $rejected = false;
+    private $loyalty;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $physicalItem;
-
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
-    private $loyaltyPoints;
-
-    /**
-     * @ORM\Column(type="float", nullable=true)
+     * @ORM\OneToOne(targetEntity="App\Entity\GiftItemMoney", inversedBy="gift", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=true)
      */
     private $money;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\GiftItemPhysical", inversedBy="gift", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $physical;
 
     public function getId(): ?int
     {
@@ -92,63 +94,62 @@ class Gift
         return $this;
     }
 
-    public function getClaimed(): ?bool
+    public function getStatus(): ?int
     {
-        return $this->claimed;
+        return $this->status;
     }
 
-    public function setClaimed(bool $claimed): self
+    public function setStatus(int $status): self
     {
-        $this->claimed = $claimed;
+        $this->status = $status;
 
         return $this;
     }
 
-    public function getRejected(): ?bool
+    public function getLoyalty(): ?GiftItemLoyalty
     {
-        return $this->rejected;
+        return $this->loyalty;
     }
 
-    public function setRejected(bool $rejected): self
+    public function setLoyalty(GiftItemLoyalty $loyalty): self
     {
-        $this->rejected = $rejected;
+        $this->loyalty = $loyalty;
 
         return $this;
     }
 
-    public function getPhysicalItem(): ?string
-    {
-        return $this->physicalItem;
-    }
-
-    public function setPhysicalItem(?string $physicalItem): self
-    {
-        $this->physicalItem = $physicalItem;
-
-        return $this;
-    }
-
-    public function getLoyaltyPoints(): ?float
-    {
-        return $this->loyaltyPoints;
-    }
-
-    public function setLoyaltyPoints(?float $loyaltyPoints): self
-    {
-        $this->loyaltyPoints = $loyaltyPoints;
-
-        return $this;
-    }
-
-    public function getMoney(): ?float
+    public function getMoney(): ?GiftItemMoney
     {
         return $this->money;
     }
 
-    public function setMoney(?float $money): self
+    public function setMoney(GiftItemMoney $money): self
     {
         $this->money = $money;
 
         return $this;
+    }
+
+    public function getPhysical(): ?GiftItemPhysical
+    {
+        return $this->physical;
+    }
+
+    public function setPhysical(GiftItemPhysical $physical): self
+    {
+        $this->physical = $physical;
+
+        return $this;
+    }
+
+    public function getItem(): GiftItemInterface
+    {
+        if ($this->type === self::TYPE_MONEY) {
+            return $this->money;
+        } elseif ($this->type === self::TYPE_LOYALTY_POINTS) {
+            return $this->loyalty;
+        } elseif ($this->type === self::TYPE_PHYSICAL) {
+            return $this->physical;
+        }
     }
 }
